@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Telegram WebApp Test</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        pre { background: #f0f0f0; padding: 10px; border-radius: 5px; }
+        button { padding: 10px 15px; background: #0088cc; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Telegram WebApp InitData</h2>
+    <button onclick="copyData()">Скопировать InitData</button>
+    <pre id="initData">Загружаем данные...</pre>
+
+    <script>
+        Telegram.WebApp.ready();
+        
+        // Показываем данные в читаемом формате
+        const initData = Telegram.WebApp.initData;
+        const initDataElement = document.getElementById('initData');
+        
+        if (initData) {
+            // Пытаемся разобрать JSON, если данные в формате URL-encoded
+            try {
+                const parsedData = Object.fromEntries(new URLSearchParams(initData));
+                initDataElement.textContent = JSON.stringify(parsedData, null, 2);
+            } catch (e) {
+                initDataElement.textContent = decodeURIComponent(initData);
+            }
+        } else {
+            initDataElement.textContent = "Данные не получены. Откройте через Telegram WebApp.";
+        }
+
+        function copyData() {
+            const data = Telegram.WebApp.initData;
+            if (data) {
+                navigator.clipboard.writeText(data);
+                alert('InitData скопирован в буфер!');
+            } else {
+                alert('Данные не получены. Откройте через Telegram WebApp.');
+            }
+        }
+    </script>
+</body>
+</html>
