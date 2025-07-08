@@ -16,33 +16,17 @@
     <pre id="initData">Загружаем данные...</pre>
 
     <script>
-        Telegram.WebApp.ready();
-        
-        // Показываем данные в читаемом формате
-        const initData = Telegram.WebApp.initData;
-        const initDataElement = document.getElementById('initData');
-        
-        if (initData) {
-            // Пытаемся разобрать JSON, если данные в формате URL-encoded
-            try {
-                const parsedData = Object.fromEntries(new URLSearchParams(initData));
-                initDataElement.textContent = JSON.stringify(parsedData, null, 2);
-            } catch (e) {
-                initDataElement.textContent = decodeURIComponent(initData);
-            }
+    function copyData() {
+        // Копируем СЫРЫЕ данные без обработки
+        const rawInitData = Telegram.WebApp.initData; 
+        if (rawInitData) {
+            navigator.clipboard.writeText(rawInitData);
+            alert('InitData скопирован в буфер!');
+            console.log('Raw InitData:', rawInitData); // Для отладки
         } else {
-            initDataElement.textContent = "Данные не получены. Откройте через Telegram WebApp.";
+            alert('Данные не получены. Откройте через Telegram WebApp.');
         }
-
-        function copyData() {
-            const data = Telegram.WebApp.initData;
-            if (data) {
-                navigator.clipboard.writeText(data);
-                alert('InitData скопирован в буфер!');
-            } else {
-                alert('Данные не получены. Откройте через Telegram WebApp.');
-            }
-        }
-    </script>
+    }
+</script>
 </body>
 </html>
