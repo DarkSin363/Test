@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Мои покупки</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .purchase-info {
+            margin: 20px auto;
+            max-width: 300px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="purchase-info">
+        <h2>Мои покупки</h2>
+        <p id="purchase-count">Вы купили 0 кроссовок</p>
+        <button onclick="refundLastPurchase()">Вернуть товар</button>
+        <button onclick="goBack()">Назад</button>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Загружаем данные о покупках (можно через localStorage или API)
+        document.addEventListener('DOMContentLoaded', () => {
+            const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+            document.getElementById('purchase-count').textContent = 
+                `Вы купили ${purchases.length} кроссовок`;
+        });
+    </script>
+</body>
+</html>
