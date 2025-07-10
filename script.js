@@ -11,7 +11,7 @@ function goBack() {
 // Покупка через ЮKassa
 function buySneakers() {
     // Здесь будет запрос к вашему Go-серверу для создания платежа
-    fetch('https://ваш-go-сервер.ру/create-payment', {
+    fetch('https://miniature-tribble-pj7rpppjg65qf7pjg-8080.app.github.dev/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: 2000, description: "Кроссовки Nike Air Max" })
