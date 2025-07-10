@@ -30,14 +30,12 @@ function buySneakers() {
         return response.json();
     })
     .then(data => {
-        if (!data.payment_url) {
-            throw new Error('Не получена ссылка на оплату');
-        }
-        if (window.Telegram && Telegram.WebApp) {
-            Telegram.WebApp.openLink(data.payment_url);
-        } else {
-            window.open(data.payment_url, '_blank');
-        }
+    if (!data.payment_url) throw new Error('Нет ссылки на оплату');
+    if (window.Telegram?.WebApp?.openLink) {
+        Telegram.WebApp.openLink(data.payment_url); // Открывает в Telegram
+    } else {
+        window.open(data.payment_url, '_blank'); // Для браузера
+    }
     })
     .catch(error => {
         console.error('Error:', error);
