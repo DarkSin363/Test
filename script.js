@@ -15,7 +15,7 @@ function buySneakers() {
         return;
     }
     
-    fetch('http://localhost:8080/create-payment', {
+    fetch('https://9f54ba3afab066072a449066a2468de3.serveo.net/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
