@@ -10,16 +10,34 @@ function goBack() {
 
 // Покупка через ЮKassa
 function buySneakers() {
-    // Здесь будет запрос к вашему Go-серверу для создания платежа
+    if (!window.Telegram || !Telegram.WebApp) {
+        alert('Telegram WebApp не инициализирован');
+        return;
+    }
+    
     fetch('http://localhost:8080/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: 2000, description: "Мюли женские Инжир" })
+        body: JSON.stringify({ 
+            amount: 2000, 
+            description: "Мюли 'Инжир'" 
+        })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error(text) });
+        }
+        return response.json();
+    })
     .then(data => {
-        // Открываем платежную форму ЮKassa
+        if (!data.payment_url) {
+            throw new Error('Не получена ссылка на оплату');
+        }
         Telegram.WebApp.openInvoice(data.payment_url);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ошибка при создании платежа: ' + error.message);
     });
 }
 
