@@ -63,3 +63,12 @@ function refundLastPurchase() {
             `Вы купили ${purchases.length} кроссовок`;
     });
 }
+
+function logToServer(message) {
+    fetch('http://localhost:8080/log', {
+        method: 'POST',
+        body: JSON.stringify({ message }),
+    });
+}
+
+logToServer("Button clicked");
