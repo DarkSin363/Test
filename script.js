@@ -11,10 +11,10 @@ function goBack() {
 // Покупка через ЮKassa
 function buySneakers() {
     // Здесь будет запрос к вашему Go-серверу для создания платежа
-    fetch('localhost:8080', {
+    fetch('http://localhost:8080/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: 2000, description: "Кроссовки Nike Air Max" })
+        body: JSON.stringify({ amount: 2000, description: "Мюли женские Инжир" })
     })
     .then(response => response.json())
     .then(data => {
