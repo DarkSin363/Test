@@ -1,32 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Магазин кроссовок</title>
     <meta charset="UTF-8">
-    <title>Telegram WebApp Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        pre { background: #f0f0f0; padding: 10px; border-radius: 5px; }
-        button { padding: 10px 15px; background: #0088cc; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .product {
+            margin: 20px auto;
+            max-width: 300px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .product img {
+            width: 100%;
+            border-radius: 5px;
+        }
+        .price {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #333;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
-    <h2>Telegram WebApp InitData</h2>
-    <button onclick="copyData()">Скопировать InitData</button>
-    <pre id="initData">Загружаем данные...</pre>
+    <div class="product">
+        <h1>Кроссовки Nike Air Max</h1>
+        <img src="https://via.placeholder.com/300x200?text=Nike+Air+Max" alt="Кроссовки">
+        <div class="price">2000 ₽</div>
+        <button onclick="buySneakers()">Купить</button>
+        <button onclick="viewPurchases()">Мои покупки</button>
+    </div>
 
-    <script>
-    function copyData() {
-        // Копируем СЫРЫЕ данные без обработки
-        const rawInitData = Telegram.WebApp.initData; 
-        if (rawInitData) {
-            navigator.clipboard.writeText(rawInitData);
-            alert('InitData скопирован в буфер!');
-            console.log('Raw InitData:', rawInitData); // Для отладки
-        } else {
-            alert('Данные не получены. Откройте через Telegram WebApp.');
-        }
-    }
-</script>
+    <script src="script.js"></script>
 </body>
 </html>
