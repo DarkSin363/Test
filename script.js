@@ -77,3 +77,29 @@ function logToServer(message) {
 }
 
 logToServer("Button clicked");
+
+// Проверяем, был ли успешный платеж при загрузке страницы
+document.addEventListener('DOMContentLoaded', () => {
+    const tg = window.Telegram.WebApp;
+    const startParam = tg.initDataUnsafe?.start_param; // "payment_success_12345"
+    
+    if (startParam && startParam.startsWith("payment_success_")) {
+        const paymentId = startParam.split("_")[2];
+        checkPaymentStatus(paymentId);
+    }
+});
+
+// Функция проверки статуса платежа
+function checkPaymentStatus(paymentId) {
+    fetch(`https://ваш-сервер.ру/check-payment?payment_id=${paymentId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "succeeded") {
+                // Обновляем счетчик
+                const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+                purchases.push({ id: paymentId });
+                localStorage.setItem('purchases', JSON.stringify(purchases));
+                alert("Оплата прошла успешно!");
+            }
+        });
+}
