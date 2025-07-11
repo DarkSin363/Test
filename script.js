@@ -18,7 +18,7 @@ function buySneakers() {
     // Показываем индикатор загрузки
     Telegram.WebApp.MainButton.showProgress(true);
     
-    fetch('https://your-server.com/create-payment', {
+    fetch('https://a4d9013f-c1c0-46ff-a267-96eefd4d8635-00-351a4rsdvw4x1.spock.replit.dev/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -93,7 +93,7 @@ function refundLastPurchase() {
     }
     
     // Запрос к Go-серверу на возврат
-    fetch('https://ваш-go-сервер.ру/refund', {
+    fetch('https://a4d9013f-c1c0-46ff-a267-96eefd4d8635-00-351a4rsdvw4x1.spock.replit.dev/refund', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ payment_id: purchases[purchases.length - 1].id })
