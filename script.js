@@ -15,34 +15,34 @@ function buySneakers() {
         return;
     }
     
-    fetch('https://a4d9013f-c1c0-46ff-a267-96eefd4d8635-00-351a4rsdvw4x1.spock.replit.dev/create-payment', {
+    // Показываем индикатор загрузки
+    Telegram.WebApp.MainButton.showProgress(true);
+    
+    fetch('https://your-server.com/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
             amount: 2000, 
-            description: "Мюли 'Инжир'" 
+            description: "Мюли 'Инжир'",
+            user_id: Telegram.WebApp.initDataUnsafe.user.id // Передаем ID пользователя
         })
     })
-    .then(response => {
-        if (!response.ok) {
-            return response.text().then(text => { throw new Error(text) });
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
-    if (!data.payment_url) throw new Error('Не получена ссылка на оплату');
-    
-    if (Telegram.WebApp.isExpanded) {
-        // Для мобильных устройств
-        Telegram.WebApp.openLink(data.payment_url);
-    } else {
-        // Для десктопа
-        window.open(data.payment_url, '_blank');
-    }
+        Telegram.WebApp.openInvoice(data.payment_url, (status) => {
+            Telegram.WebApp.MainButton.hideProgress();
+            if (status === 'paid') {
+                handlePaymentSuccess({
+                    payment_id: data.payment_id,
+                    amount: data.amount,
+                    currency: data.currency
+                });
+            }
+        });
     })
     .catch(error => {
-        console.error('Error:', error);
-        alert('Ошибка при создании платежа: ' + error.message);
+        Telegram.WebApp.MainButton.hideProgress();
+        Telegram.WebApp.showAlert("Ошибка: " + error.message);
     });
 }
 
