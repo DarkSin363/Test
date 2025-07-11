@@ -46,27 +46,43 @@ function buySneakers() {
     });
 }
 
-// Отправляем уведомление в Telegram при успешной оплате
-function sendTelegramNotification(paymentId) {
+Telegram.WebApp.ready();
+updatePurchaseCounter();
+
+function handlePaymentSuccess(paymentData) {
     const tg = window.Telegram.WebApp;
+    
+    // 1. Показываем всплывающее уведомление
+    tg.showAlert(`✅ Оплата ${paymentData.payment_id} на ${paymentData.amount} ${paymentData.currency} прошла успешно!`);
+    
+    // 2. Обновляем счетчик покупок
+    const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+    purchases.push({
+        id: paymentData.payment_id,
+        amount: paymentData.amount,
+        date: new Date().toISOString()
+    });
+    localStorage.setItem('purchases', JSON.stringify(purchases));
+    
+    // 3. Обновляем UI
+    updatePurchaseCounter();
+    
+    // 4. Можно отправить данные в бота
     tg.sendData(JSON.stringify({
         type: "payment_success",
-        payment_id: paymentId
+        payment_id: paymentData.payment_id,
+        amount: paymentData.amount
     }));
-    
-    // Альтернатива: показать всплывающее уведомление
-    tg.showAlert(`Платеж ${paymentId} успешно завершен!`);
 }
 
-// Проверяем, был ли платеж успешным при загрузке страницы
-Telegram.WebApp.ready();
-Telegram.WebApp.onEvent('viewportChanged', () => {
-    const startParam = Telegram.WebApp.initDataUnsafe?.start_param;
-    if (startParam?.includes('payment_success')) {
-        const paymentId = startParam.split('_')[2];
-        completePurchase(paymentId); // Ваша функция обновления счетчика
+// Обновление счетчика на странице
+function updatePurchaseCounter() {
+    const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+    const counterElement = document.getElementById('purchase-count');
+    if (counterElement) {
+        counterElement.textContent = `Куплено товаров: ${purchases.length}`;
     }
-});
+}
 
 // Возврат товара
 function refundLastPurchase() {
