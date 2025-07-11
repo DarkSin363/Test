@@ -46,6 +46,28 @@ function buySneakers() {
     });
 }
 
+// Отправляем уведомление в Telegram при успешной оплате
+function sendTelegramNotification(paymentId) {
+    const tg = window.Telegram.WebApp;
+    tg.sendData(JSON.stringify({
+        type: "payment_success",
+        payment_id: paymentId
+    }));
+    
+    // Альтернатива: показать всплывающее уведомление
+    tg.showAlert(`Платеж ${paymentId} успешно завершен!`);
+}
+
+// Проверяем, был ли платеж успешным при загрузке страницы
+Telegram.WebApp.ready();
+Telegram.WebApp.onEvent('viewportChanged', () => {
+    const startParam = Telegram.WebApp.initDataUnsafe?.start_param;
+    if (startParam?.includes('payment_success')) {
+        const paymentId = startParam.split('_')[2];
+        completePurchase(paymentId); // Ваша функция обновления счетчика
+    }
+});
+
 // Возврат товара
 function refundLastPurchase() {
     const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
