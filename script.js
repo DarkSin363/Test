@@ -15,7 +15,7 @@ function buySneakers() {
         return;
     }
     
-    fetch('https://9f54ba3afab066072a449066a2468de3.serveo.net/create-payment', {
+    fetch('https://4fd16607-9b69-4753-8e37-7912288b668f-00-22dsek9tvwb5y.spock.replit.dev/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
