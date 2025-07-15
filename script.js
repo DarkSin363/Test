@@ -91,6 +91,64 @@ function updatePurchaseCount() {
         .catch(console.error);
 }
 
+async function updatePurchaseCount() {
+    const isOnline = await checkConnection();
+    if (!isOnline) {
+        const lastCount = localStorage.getItem('lastPurchaseCount') || 0;
+        document.getElementById('purchase-count').textContent = 
+            `Количество покупок: ${lastCount} (оффлайн режим)`;
+        return;
+    }
+    try {
+        const response = await fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/get-purchase-count');
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Сервер вернул ошибку: ${errorText}`);
+        }
+        
+        const data = await response.json();
+        
+        if (!data || typeof data.count === 'undefined') {
+            throw new Error("Неверный формат ответа от сервера");
+        }
+        
+        if (document.getElementById('purchase-count')) {
+            document.getElementById('purchase-count').textContent = 
+                `Количество покупок: ${data.count}`;
+            localStorage.setItem('lastPurchaseCount', data.count);
+        }
+    } catch (error) {
+        console.error('Error updating purchase count:', error);
+        
+        // Пробуем получить данные из localStorage
+        const lastCount = localStorage.getItem('lastPurchaseCount');
+        if (document.getElementById('purchase-count')) {
+            if (lastCount) {
+                document.getElementById('purchase-count').textContent = 
+                    `Количество покупок: ${lastCount} (данные могут быть устаревшими)`;
+            } else {
+                document.getElementById('purchase-count').textContent = 
+                    'Не удалось загрузить данные. Ошибка: ' + error.message;
+            }
+        }
+    }
+}
+function checkConnection() {
+    return new Promise((resolve) => {
+        if (navigator.onLine) {
+            resolve(true);
+        } else {
+            // Дополнительная проверка через HEAD запрос
+            fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev', {
+                method: 'HEAD',
+                cache: 'no-cache'
+            })
+            .then(() => resolve(true))
+            .catch(() => resolve(false));
+        }
+    });
+}
 function logToServer(message) {
     fetch('http://localhost:8080/log', {
         method: 'POST',
