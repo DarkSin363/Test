@@ -33,6 +33,18 @@ function buySneakers() {
         if (!data.payment_url) {
             throw new Error('Не получена ссылка на оплату');
         }
+
+        const paymentInfo = {
+            id: Date.now().toString(),
+            date: new Date().toISOString(),
+            amount: 2000,
+            status: 'pending'
+        };
+        
+        const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+        purchases.push(paymentInfo);
+        localStorage.setItem('purchases', JSON.stringify(purchases));
+        
         // Используем стандартное открытие ссылки
         if (window.Telegram && Telegram.WebApp) {
             Telegram.WebApp.openLink(data.payment_url);
@@ -54,8 +66,8 @@ function refundLastPurchase() {
         return;
     }
     
-    // Запрос к Go-серверу на возврат
-    fetch('https://ваш-go-сервер.ру/refund', {
+    // Запрос к серверу на возврат
+    fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/refund', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ payment_id: purchases[purchases.length - 1].id })
@@ -64,9 +76,19 @@ function refundLastPurchase() {
         purchases.pop();
         localStorage.setItem('purchases', JSON.stringify(purchases));
         alert("Возврат оформлен!");
-        document.getElementById('purchase-count').textContent = 
-            `Вы купили ${purchases.length} кроссовок`;
+        updatePurchaseCount(); // Обновляем счетчик
     });
+}
+function updatePurchaseCount() {
+    fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/get-purchase-count')
+        .then(response => response.json())
+        .then(data => {
+            if (document.getElementById('purchase-count')) {
+                document.getElementById('purchase-count').textContent = 
+                    `Количество покупок: ${data.count}`;
+            }
+        })
+        .catch(console.error);
 }
 
 function logToServer(message) {
