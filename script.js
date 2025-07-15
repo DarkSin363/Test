@@ -58,26 +58,52 @@ function buySneakers() {
     });
 }
 
-// Возврат товара
-function refundLastPurchase() {
-    const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
-    if (purchases.length === 0) {
-        alert("Нет покупок для возврата!");
+// Возврат последнего платежа
+async function refundLastPurchase() {
+    if (!confirm("Вы уверены, что хотите вернуть последнюю покупку?")) {
         return;
     }
-    
-    // Запрос к серверу на возврат
-    fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/refund', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ payment_id: purchases[purchases.length - 1].id })
-    })
-    .then(() => {
-        purchases.pop();
-        localStorage.setItem('purchases', JSON.stringify(purchases));
-        alert("Возврат оформлен!");
-        updatePurchaseCount(); // Обновляем счетчик
-    });
+
+    try {
+        const response = await fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/refund', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                payment_id: getLastSuccessfulPaymentId() 
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Ошибка сервера");
+        }
+
+        const result = await response.json();
+        
+        // Обновляем локальное хранилище
+        const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+        if (purchases.length > 0) {
+            purchases[purchases.length - 1].status = "refunded";
+            localStorage.setItem('purchases', JSON.stringify(purchases));
+        }
+        
+        alert("Возврат успешно выполнен!");
+        updatePurchaseCount();
+    } catch (error) {
+        console.error("Ошибка возврата:", error);
+        alert("Ошибка при возврате: " + error.message);
+    }
+}
+
+// Вспомогательная функция для получения ID последнего платежа
+function getLastSuccessfulPaymentId() {
+    const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+    for (let i = purchases.length - 1; i >= 0; i--) {
+        if (purchases[i].status === "succeeded") {
+            return purchases[i].id;
+        }
+    }
+    throw new Error("Не найдено успешных платежей");
 }
 function updatePurchaseCount() {
     fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/get-purchase-count')
