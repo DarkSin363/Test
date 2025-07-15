@@ -34,18 +34,32 @@
 <body>
     <div class="purchase-info">
         <h2>Мои покупки</h2>
-        <div id="purchase-count">Куплено товаров: 0</div>
+        <div id="purchase-count">Загрузка данных...</div>
         <button onclick="refundLastPurchase()">Вернуть товар</button>
         <button onclick="goBack()">Назад</button>
     </div>
 
     <script src="script.js"></script>
     <script>
-        // Загружаем данные о покупках (можно через localStorage или API)
+        // Функция для обновления счетчика
+        function updatePurchaseCount() {
+            fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/get-purchase-count')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('purchase-count').textContent = 
+                        `Количество покупок: ${data.count}`;
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    document.getElementById('purchase-count').textContent = 
+                        'Не удалось загрузить данные';
+                });
+        }
+
+        // Обновляем при загрузке и каждые 10 секунд
         document.addEventListener('DOMContentLoaded', () => {
-            const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
-            document.getElementById('purchase-count').textContent = 
-                `Вы купили ${purchases.length} тапок`;
+            updatePurchaseCount();
+            setInterval(updatePurchaseCount, 10000);
         });
     </script>
 </body>
