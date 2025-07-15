@@ -65,17 +65,20 @@ async function refundLastPurchase() {
             return;
         }
 
+        // Отправляем пустой объект {}, так как сервер сам находит последний платеж
         const response = await fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/refund', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({}) // Отправляем пустой объект
         });
 
         if (!response.ok) {
             const errorText = await response.text();
-            if (errorText.includes("No successful payments")) {
-                throw new Error("Нет успешных платежей для возврата");
+            if (errorText.includes("No successful payments") || 
+                errorText.includes("no_successful_payments")) {
+                throw new Error("У вас нет успешных покупок для возврата");
             }
-            throw new Error(errorText);
+            throw new Error(errorText || "Ошибка сервера");
         }
 
         const result = await response.json();
@@ -87,12 +90,12 @@ async function refundLastPurchase() {
             localStorage.setItem('purchases', JSON.stringify(purchases));
         }
         
-        alert("Возврат успешно выполнен!");
+        alert(result.message || "Возврат успешно выполнен!");
         updatePurchaseCount();
     } catch (error) {
         console.error("Ошибка возврата:", error);
-        alert(error.message.includes("Нет успешных платежей") 
-            ? "У вас нет покупок для возврата" 
+        alert(error.message.includes("У вас нет успешных покупок") 
+            ? error.message 
             : "Ошибка при возврате: " + error.message);
     }
 }
