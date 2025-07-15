@@ -60,26 +60,23 @@ function buySneakers() {
 
 // Возврат последнего платежа
 async function refundLastPurchase() {
-    if (!confirm("Вы уверены, что хотите вернуть последнюю покупку?")) {
-        return;
-    }
-
     try {
+        if (!confirm("Вы уверены, что хотите вернуть последнюю покупку?")) {
+            return;
+        }
+
         const response = await fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/refund', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                payment_id: getLastSuccessfulPaymentId() 
-            })
+            body: JSON.stringify({})
         });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || "Ошибка сервера");
-        }
 
         const result = await response.json();
         
+        if (!response.ok) {
+            throw new Error(result.message || "Ошибка сервера");
+        }
+
         // Обновляем локальное хранилище
         const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
         if (purchases.length > 0) {
@@ -87,11 +84,17 @@ async function refundLastPurchase() {
             localStorage.setItem('purchases', JSON.stringify(purchases));
         }
         
-        alert("Возврат успешно выполнен!");
+        alert(result.message || "Возврат успешно выполнен!");
         updatePurchaseCount();
+        updatePaymentStatus();
     } catch (error) {
         console.error("Ошибка возврата:", error);
-        alert("Ошибка при возврате: " + error.message);
+        
+        if (error.message.includes("No successful payments found")) {
+            alert("Не найдено успешных платежей для возврата");
+        } else {
+            alert("Ошибка при возврате: " + error.message);
+        }
     }
 }
 
