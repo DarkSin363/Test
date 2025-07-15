@@ -75,7 +75,19 @@
             }
         }
     }
+    <script>
+    // Проверяем и объявляем функцию если она не существует
+    if (typeof updatePaymentStatus === 'undefined') {
+        function updatePaymentStatus() {
+            // Пустая функция чтобы избежать ошибки
+        }
+    }
 
+    document.addEventListener('DOMContentLoaded', () => {
+        updatePurchaseCount();
+        setInterval(updatePurchaseCount, 10000);
+    });
+</script>
     // Обновляем при загрузке и каждые 10 секунд
     document.addEventListener('DOMContentLoaded', () => {
         updatePurchaseCount();
