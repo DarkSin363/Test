@@ -41,26 +41,53 @@
 
     <script src="script.js"></script>
     <script>
-        // Функция для обновления счетчика
-        function updatePurchaseCount() {
-            fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/get-purchase-count')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('purchase-count').textContent = 
-                        `Количество покупок: ${data.count}`;
-                })
-                .catch(error => {
-                    console.error('Ошибка:', error);
-                    document.getElementById('purchase-count').textContent = 
-                        'Не удалось загрузить данные';
-                });
+    // Функция для обновления счетчика
+    async function updatePurchaseCount() {
+        try {
+            const response = await fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/get-purchase-count');
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.status !== "success") {
+                throw new Error("Invalid server response");
+            }
+            
+            document.getElementById('purchase-count').textContent = 
+                `Количество покупок: ${data.count}`;
+                
+            // Сохраняем в localStorage для оффлайн-доступа
+            localStorage.setItem('lastPurchaseCount', data.count);
+        } catch (error) {
+            console.error('Ошибка при загрузке данных:', error);
+            
+            // Пробуем показать последние сохраненные данные
+            const lastCount = localStorage.getItem('lastPurchaseCount');
+            if (lastCount) {
+                document.getElementById('purchase-count').textContent = 
+                    `Количество покупок: ${lastCount} (данные могут быть устаревшими)`;
+            } else {
+                document.getElementById('purchase-count').textContent = 
+                    'Не удалось загрузить данные. Пожалуйста, проверьте соединение';
+            }
         }
+    }
 
-        // Обновляем при загрузке и каждые 10 секунд
-        document.addEventListener('DOMContentLoaded', () => {
-            updatePurchaseCount();
-            setInterval(updatePurchaseCount, 10000);
-        });
-    </script>
+    // Обновляем при загрузке и каждые 10 секунд
+    document.addEventListener('DOMContentLoaded', () => {
+        updatePurchaseCount();
+        setInterval(updatePurchaseCount, 10000);
+        
+        // Показываем хотя бы что-то сразу
+        const lastCount = localStorage.getItem('lastPurchaseCount');
+        if (lastCount) {
+            document.getElementById('purchase-count').textContent = 
+                `Загрузка... (последнее значение: ${lastCount})`;
+        }
+    });
+</script>
 </body>
 </html>
