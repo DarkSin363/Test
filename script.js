@@ -15,73 +15,35 @@ function buySneakers() {
         return;
     }
     
-    // Показываем индикатор загрузки
-    Telegram.WebApp.MainButton.showProgress(true);
-    
     fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
             amount: 2000, 
-            description: "Мюли 'Инжир'",
-            user_id: Telegram.WebApp.initDataUnsafe.user.id // Передаем ID пользователя
+            description: "Мюли 'Инжир'" 
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error(text) });
+        }
+        return response.json();
+    })
     .then(data => {
-        Telegram.WebApp.openInvoice(data.payment_url, (status) => {
-            Telegram.WebApp.MainButton.hideProgress();
-            if (status === 'paid') {
-                handlePaymentSuccess({
-                    payment_id: data.payment_id,
-                    amount: data.amount,
-                    currency: data.currency
-                });
-            }
-        });
+        if (!data.payment_url) {
+            throw new Error('Не получена ссылка на оплату');
+        }
+        // Используем стандартное открытие ссылки
+        if (window.Telegram && Telegram.WebApp) {
+            Telegram.WebApp.openLink(data.payment_url);
+        } else {
+            window.open(data.payment_url, '_blank');
+        }
     })
     .catch(error => {
-        Telegram.WebApp.MainButton.hideProgress();
-        Telegram.WebApp.showAlert("Ошибка: " + error.message);
+        console.error('Error:', error);
+        alert('Ошибка при создании платежа: ' + error.message);
     });
-}
-
-Telegram.WebApp.ready();
-updatePurchaseCounter();
-
-function handlePaymentSuccess(paymentData) {
-    const tg = window.Telegram.WebApp;
-    
-    // 1. Показываем всплывающее уведомление
-    tg.showAlert(`✅ Оплата ${paymentData.payment_id} на ${paymentData.amount} ${paymentData.currency} прошла успешно!`);
-    
-    // 2. Обновляем счетчик покупок
-    const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
-    purchases.push({
-        id: paymentData.payment_id,
-        amount: paymentData.amount,
-        date: new Date().toISOString()
-    });
-    localStorage.setItem('purchases', JSON.stringify(purchases));
-    
-    // 3. Обновляем UI
-    updatePurchaseCounter();
-    
-    // 4. Можно отправить данные в бота
-    tg.sendData(JSON.stringify({
-        type: "payment_success",
-        payment_id: paymentData.payment_id,
-        amount: paymentData.amount
-    }));
-}
-
-// Обновление счетчика на странице
-function updatePurchaseCounter() {
-    const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
-    const counterElement = document.getElementById('purchase-count');
-    if (counterElement) {
-        counterElement.textContent = `Куплено товаров: ${purchases.length}`;
-    }
 }
 
 // Возврат товара
@@ -93,7 +55,7 @@ function refundLastPurchase() {
     }
     
     // Запрос к Go-серверу на возврат
-    fetch('https://a4d9013f-c1c0-46ff-a267-96eefd4d8635-00-351a4rsdvw4x1.spock.replit.dev/refund', {
+    fetch('https://ваш-go-сервер.ру/refund', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ payment_id: purchases[purchases.length - 1].id })
@@ -108,7 +70,7 @@ function refundLastPurchase() {
 }
 
 function logToServer(message) {
-    fetch('https://9f54ba3afab066072a449066a2468de3.serveo.net/create-payment', {
+    fetch('http://localhost:8080/log', {
         method: 'POST',
         body: JSON.stringify({ message }),
     });
