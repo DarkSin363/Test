@@ -1,3 +1,41 @@
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.Telegram && Telegram.WebApp) {
+        // Отправляем данные пользователя на сервер
+        sendUserData();
+    }
+});
+
+function sendUserData() {
+    if (!window.Telegram || !Telegram.WebApp) {
+        console.log('Telegram WebApp не инициализирован');
+        return;
+    }
+    
+    const initData = Telegram.WebApp.initData;
+    if (!initData) {
+        console.log('Нет данных инициализации WebApp');
+        return;
+    }
+    
+    fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/user-init', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `tgWebAppInitData=${encodeURIComponent(initData)}`
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error(text) });
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Пользователь сохранен:', data.user);
+    })
+    .catch(error => {
+        console.error('Ошибка при сохранении пользователя:', error);
+    });
+}
+
 // Перенаправление на страницу покупок
 function viewPurchases() {
     window.location.href = "purchases.html";
