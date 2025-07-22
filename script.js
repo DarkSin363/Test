@@ -17,7 +17,7 @@ function sendUserData() {
         return;
     }
     
-    fetch('https://your-server-url/user-init', {
+    fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/user-init', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
