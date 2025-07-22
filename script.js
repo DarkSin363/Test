@@ -17,7 +17,7 @@ function sendUserData() {
         return;
     }
     
-    fetch('https://opulent-waddle-7v79pppvrxp72wqw5-8080.app.github.dev/user-init', {
+    fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/user-init', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `tgWebAppInitData=${encodeURIComponent(initData)}`
@@ -53,7 +53,7 @@ function buySneakers() {
         return;
     }
     
-    fetch('https://opulent-waddle-7v79pppvrxp72wqw5-8080.app.github.dev/create-payment', {
+    fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -104,7 +104,7 @@ async function refundLastPurchase() {
         }
 
         // Отправляем пустой объект {}, так как сервер сам находит последний платеж
-        const response = await fetch('https://opulent-waddle-7v79pppvrxp72wqw5-8080.app.github.dev/refund', {
+        const response = await fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/refund', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({}) // Отправляем пустой объект
@@ -149,7 +149,7 @@ function getLastSuccessfulPaymentId() {
     throw new Error("Не найдено успешных платежей");
 }
 function updatePurchaseCount() {
-    fetch('https://opulent-waddle-7v79pppvrxp72wqw5-8080.app.github.dev/get-purchase-count')
+    fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/get-purchase-count')
         .then(response => response.json())
         .then(data => {
             if (document.getElementById('purchase-count')) {
@@ -169,7 +169,7 @@ async function updatePurchaseCount() {
         return;
     }
     try {
-        const response = await fetch('https://opulent-waddle-7v79pppvrxp72wqw5-8080.app.github.dev/get-purchase-count');
+        const response = await fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/get-purchase-count');
         
         if (!response.ok) {
             const errorText = await response.text();
@@ -209,7 +209,7 @@ function checkConnection() {
             resolve(true);
         } else {
             // Дополнительная проверка через HEAD запрос
-            fetch('https://opulent-waddle-7v79pppvrxp72wqw5-8080.app.github.dev', {
+            fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev', {
                 method: 'HEAD',
                 cache: 'no-cache'
             })
