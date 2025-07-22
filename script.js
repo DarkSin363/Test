@@ -17,10 +17,13 @@ function sendUserData() {
         return;
     }
     
-    fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/user-init', {
+    fetch('https://your-server-url/user-init', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `tgWebAppInitData=${encodeURIComponent(initData)}`
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Telegram-InitData': initData  // Добавляем в заголовок
+        },
+        body: JSON.stringify({ initData })  // И дублируем в теле запроса
     })
     .then(response => {
         if (!response.ok) {
