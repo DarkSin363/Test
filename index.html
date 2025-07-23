@@ -56,5 +56,13 @@
     </div>
 
     <script src="script.js"></script>
+    <script>
+    // Debug info
+    console.log('Telegram.WebApp available:', typeof Telegram !== 'undefined' && typeof Telegram.WebApp !== 'undefined');
+    if (typeof Telegram !== 'undefined') {
+        console.log('WebApp initData:', Telegram.WebApp?.initData);
+        console.log('WebApp platform:', Telegram.WebApp?.platform);
+    }
+</script>
 </body>
 </html>
