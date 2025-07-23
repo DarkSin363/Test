@@ -7,35 +7,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function sendUserData() {
     if (!window.Telegram || !Telegram.WebApp) {
-        console.log('Telegram WebApp не инициализирован');
+        console.error('Telegram WebApp not initialized');
         return;
     }
     
     const initData = Telegram.WebApp.initData;
     if (!initData) {
-        console.log('Нет данных инициализации WebApp');
+        console.error('No initData available');
         return;
     }
     
-    fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/user-init', {
+    console.log('Sending initData:', initData);
+    
+    fetch('https://your-server-url/user-init', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-Telegram-InitData': initData  // Добавляем в заголовок
+            'X-Telegram-InitData': initData
         },
-        body: JSON.stringify({ initData })  // И дублируем в теле запроса
+        body: JSON.stringify({ initData })
     })
     .then(response => {
-        if (!response.ok) {
-            return response.text().then(text => { throw new Error(text) });
-        }
+        console.log('Response status:', response.status);
         return response.json();
     })
     .then(data => {
-        console.log('Пользователь сохранен:', data.user);
+        console.log('Server response:', data);
     })
     .catch(error => {
-        console.error('Ошибка при сохранении пользователя:', error);
+        console.error('Request failed:', error);
     });
 }
 
