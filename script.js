@@ -1,30 +1,19 @@
-// 1. Ожидаем полной загрузки WebApp
 Telegram.WebApp.ready();
+Telegram.WebApp.onEvent('viewportChanged', sendUserData);
 
-// 2. Проверяем инициализацию через событие
-Telegram.WebApp.onEvent('viewportChanged', function() {
-    console.log('WebApp initialized:', Telegram.WebApp.initData);
-    sendUserData();
-});
+let userDataSent = false; // Флаг для отслеживания отправки
 
-// 3. Альтернативный вариант - проверка через setTimeout
-setTimeout(function() {
-    if (window.Telegram && Telegram.WebApp) {
-        console.log('WebApp check after timeout:', Telegram.WebApp.initData);
-        sendUserData();
-    }
-}, 1000);
-
-// 4. Основная функция отправки данных
 function sendUserData() {
-    if (!window.Telegram || !Telegram.WebApp || !Telegram.WebApp.initData) {
-        console.error('Telegram WebApp not properly initialized');
-        console.log('Current WebApp state:', Telegram.WebApp);
+    if (userDataSent) return; // Уже отправили
+    userDataSent = true;
+    
+    if (!window.Telegram?.WebApp?.initData) {
+        console.error('WebApp not ready');
         return;
     }
-    
+
+    console.log('Sending user data once');
     const initData = Telegram.WebApp.initData;
-    console.log('Sending initData:', initData);
     
     fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/user-init', {
         method: 'POST',
@@ -32,24 +21,14 @@ function sendUserData() {
             'Content-Type': 'application/json',
             'X-Telegram-InitData': initData
         },
-        body: JSON.stringify({ 
-            initData: initData,
-            platform: Telegram.WebApp.platform,
-            version: Telegram.WebApp.version
-        })
+        body: JSON.stringify({ initData })
     })
     .then(response => {
-        console.log('Response status:', response.status);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        console.log('Response received');
         return response.json();
     })
-    .then(data => {
-        console.log('Server response:', data);
-    })
     .catch(error => {
-        console.error('Request failed:', error);
+        console.error('Error:', error);
     });
 }
 
