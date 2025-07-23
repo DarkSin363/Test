@@ -1,34 +1,48 @@
-document.addEventListener('DOMContentLoaded', function() {
-    if (window.Telegram && Telegram.WebApp) {
-        // Отправляем данные пользователя на сервер
-        sendUserData();
-    }
+// 1. Ожидаем полной загрузки WebApp
+Telegram.WebApp.ready();
+
+// 2. Проверяем инициализацию через событие
+Telegram.WebApp.onEvent('viewportChanged', function() {
+    console.log('WebApp initialized:', Telegram.WebApp.initData);
+    sendUserData();
 });
 
+// 3. Альтернативный вариант - проверка через setTimeout
+setTimeout(function() {
+    if (window.Telegram && Telegram.WebApp) {
+        console.log('WebApp check after timeout:', Telegram.WebApp.initData);
+        sendUserData();
+    }
+}, 1000);
+
+// 4. Основная функция отправки данных
 function sendUserData() {
-    if (!window.Telegram || !Telegram.WebApp) {
-        console.error('Telegram WebApp not initialized');
+    if (!window.Telegram || !Telegram.WebApp || !Telegram.WebApp.initData) {
+        console.error('Telegram WebApp not properly initialized');
+        console.log('Current WebApp state:', Telegram.WebApp);
         return;
     }
     
     const initData = Telegram.WebApp.initData;
-    if (!initData) {
-        console.error('No initData available');
-        return;
-    }
-    
     console.log('Sending initData:', initData);
     
-    fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/user-init', {
+    fetch('https://your-server-url/user-init', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-Telegram-InitData': initData
         },
-        body: JSON.stringify({ initData })
+        body: JSON.stringify({ 
+            initData: initData,
+            platform: Telegram.WebApp.platform,
+            version: Telegram.WebApp.version
+        })
     })
     .then(response => {
         console.log('Response status:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         return response.json();
     })
     .then(data => {
