@@ -51,7 +51,10 @@ function buySneakers() {
     
     fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/create-payment', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Telegram-InitData': initData
+        },
         body: JSON.stringify({ 
             amount: 2000, 
             description: "Мюли 'Инжир'" 
