@@ -16,7 +16,7 @@ function sendUserData() {
         console.log('Нет данных инициализации WebApp');
         return;
     }
-    
+
     fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/user-init', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -52,7 +52,7 @@ function buySneakers() {
         alert('Telegram WebApp не инициализирован');
         return;
     }
-    
+
     fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -78,11 +78,11 @@ function buySneakers() {
             amount: 2000,
             status: 'pending'
         };
-        
+
         const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
         purchases.push(paymentInfo);
         localStorage.setItem('purchases', JSON.stringify(purchases));
-        
+
         // Используем стандартное открытие ссылки
         if (window.Telegram && Telegram.WebApp) {
             Telegram.WebApp.openLink(data.payment_url);
@@ -120,14 +120,14 @@ async function refundLastPurchase() {
         }
 
         const result = await response.json();
-        
+
         // Обновляем локальное хранилище
         const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
         if (purchases.length > 0) {
             purchases[purchases.length - 1].status = "refunded";
             localStorage.setItem('purchases', JSON.stringify(purchases));
         }
-        
+
         alert(result.message || "Возврат успешно выполнен!");
         updatePurchaseCount();
     } catch (error) {
@@ -170,18 +170,18 @@ async function updatePurchaseCount() {
     }
     try {
         const response = await fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/get-purchase-count');
-        
+
         if (!response.ok) {
             const errorText = await response.text();
             throw new Error(`Сервер вернул ошибку: ${errorText}`);
         }
-        
+
         const data = await response.json();
-        
+
         if (!data || typeof data.count === 'undefined') {
             throw new Error("Неверный формат ответа от сервера");
         }
-        
+
         if (document.getElementById('purchase-count')) {
             document.getElementById('purchase-count').textContent = 
                 `Количество покупок: ${data.count}`;
@@ -189,82 +189,7 @@ async function updatePurchaseCount() {
         }
     } catch (error) {
         console.error('Error updating purchase count:', error);
-        
-        // Пробуем получить данные из localStorage
-        const lastCount = localStorage.getItem('lastPurchaseCount');
-        if (document.getElementById('purchase-count')) {
-            if (lastCount) {
-                document.getElementById('purchase-count').textContent = 
-                    `Количество покупок: ${lastCount} (данные могут быть устаревшими)`;
-            } else {
-                document.getElementById('purchase-count').textContent = 
-                    'Не удалось загрузить данные. Ошибка: ' + error.message;
-            }
-        }
-    }
-}
-function checkConnection() {
-    return new Promise((resolve) => {
-        if (navigator.onLine) {
-            resolve(true);
-        } else {
-            // Дополнительная проверка через HEAD запрос
-            fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev', {
-                method: 'HEAD',
-                cache: 'no-cache'
-            })
-            .then(() => resolve(true))
-            .catch(() => resolve(false));
-        }
-    });
-}
-function logToServer(message) {
-    fetch('http://localhost:8080/log', {
-        method: 'POST',
-        body: JSON.stringify({ message }),
-    });
-}
 
-logToServer("Button clicked");
-        .then(data => {
-            if (document.getElementById('purchase-count')) {
-                document.getElementById('purchase-count').textContent = 
-                    `Количество покупок: ${data.count}`;
-            }
-        })
-        .catch(console.error);
-}
-
-async function updatePurchaseCount() {
-    const isOnline = await checkConnection();
-    if (!isOnline) {
-        const lastCount = localStorage.getItem('lastPurchaseCount') || 0;
-        document.getElementById('purchase-count').textContent = 
-            `Количество покупок: ${lastCount} (оффлайн режим)`;
-        return;
-    }
-    try {
-        const response = await fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/get-purchase-count');
-        
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Сервер вернул ошибку: ${errorText}`);
-        }
-        
-        const data = await response.json();
-        
-        if (!data || typeof data.count === 'undefined') {
-            throw new Error("Неверный формат ответа от сервера");
-        }
-        
-        if (document.getElementById('purchase-count')) {
-            document.getElementById('purchase-count').textContent = 
-                `Количество покупок: ${data.count}`;
-            localStorage.setItem('lastPurchaseCount', data.count);
-        }
-    } catch (error) {
-        console.error('Error updating purchase count:', error);
-        
         // Пробуем получить данные из localStorage
         const lastCount = localStorage.getItem('lastPurchaseCount');
         if (document.getElementById('purchase-count')) {
