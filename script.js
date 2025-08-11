@@ -52,12 +52,6 @@ function buySneakers() {
         alert('Telegram WebApp не инициализирован');
         return;
     }
-
-    const initData = Telegram.WebApp.initData;
-    if (!initData) {
-        console.log('Нет данных инициализации WebApp');
-        return;
-    }
     
     fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/create-payment', {
         method: 'POST',
@@ -65,8 +59,7 @@ function buySneakers() {
         body: JSON.stringify({ 
             amount: 2000, 
             description: "Мюли 'Инжир'" 
-        }),
-        `tgWebAppInitData=${encodeURIComponent(initData)}`
+        })
     })
     .then(response => {
         if (!response.ok) {
