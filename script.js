@@ -299,3 +299,5 @@ function logToServer(message) {
         body: JSON.stringify({ message }),
     });
 }
+
+logToServer("Button clicked");
