@@ -17,7 +17,7 @@ function sendUserData() {
         return;
     }
 
-    fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/user-init', {
+    fetch('https://coral-wrong-decide-sentence.trycloudflare.com/user-init', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `tgWebAppInitData=${encodeURIComponent(initData)}`
@@ -59,7 +59,7 @@ function buySneakers() {
         return;
     }
     
-    fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/create-payment', {
+    fetch('https://coral-wrong-decide-sentence.trycloudflare.com/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json',
                  'X-Telegram-InitData': initData
@@ -112,7 +112,7 @@ async function refundLastPurchase() {
         }
 
         // Отправляем пустой объект {}, так как сервер сам находит последний платеж
-        const response = await fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/refund', {
+        const response = await fetch('https://coral-wrong-decide-sentence.trycloudflare.com/refund', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({}) // Отправляем пустой объект
@@ -157,7 +157,7 @@ function getLastSuccessfulPaymentId() {
     throw new Error("Не найдено успешных платежей");
 }
 function updatePurchaseCount() {
-    fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/get-purchase-count')
+    fetch('https://coral-wrong-decide-sentence.trycloudflare.com/get-purchase-count')
         .then(response => response.json())
         .then(data => {
             if (document.getElementById('purchase-count')) {
@@ -177,7 +177,7 @@ async function updatePurchaseCount() {
         return;
     }
     try {
-        const response = await fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/get-purchase-count');
+        const response = await fetch('https://coral-wrong-decide-sentence.trycloudflare.com/get-purchase-count');
 
         if (!response.ok) {
             const errorText = await response.text();
@@ -217,7 +217,7 @@ function checkConnection() {
             resolve(true);
         } else {
             // Дополнительная проверка через HEAD запрос
-            fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev', {
+            fetch('https://coral-wrong-decide-sentence.trycloudflare.com', {
                 method: 'HEAD',
                 cache: 'no-cache'
             })
