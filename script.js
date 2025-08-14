@@ -17,7 +17,7 @@ function sendUserData() {
         return;
     }
 
-    fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/user-init', {
+    fetch('http://testukassa.ru:8080/user-init', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `tgWebAppInitData=${encodeURIComponent(initData)}`
@@ -59,7 +59,7 @@ function buySneakers() {
         return;
     }
     
-    fetch('https://201aab02-66e6-41f8-bd94-e0671776d62f-00-1vg00qvesbdwi.janeway.replit.dev/create-payment', {
+    fetch('http://testukassa.ru:8080/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json',
                  'X-Telegram-InitData': initData
