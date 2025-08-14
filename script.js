@@ -112,7 +112,7 @@ async function refundLastPurchase() {
         }
 
         // Отправляем пустой объект {}, так как сервер сам находит последний платеж
-        const response = await fetch('https://testukassa.ru:8080/refund', {
+        const response = await fetch('https://testukassa.ru/refund', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({}) // Отправляем пустой объект
@@ -157,7 +157,7 @@ function getLastSuccessfulPaymentId() {
     throw new Error("Не найдено успешных платежей");
 }
 function updatePurchaseCount() {
-    fetch('https://testukassa.ru:8080/get-purchase-count')
+    fetch('https://testukassa.ru/get-purchase-count')
         .then(response => response.json())
         .then(data => {
             if (document.getElementById('purchase-count')) {
@@ -177,7 +177,7 @@ async function updatePurchaseCount() {
         return;
     }
     try {
-        const response = await fetch('https://testukassa.ru:8080/get-purchase-count');
+        const response = await fetch('https://testukassa.ru/get-purchase-count');
 
         if (!response.ok) {
             const errorText = await response.text();
@@ -217,7 +217,7 @@ function checkConnection() {
             resolve(true);
         } else {
             // Дополнительная проверка через HEAD запрос
-            fetch('https://testukassa.ru:8080/', {
+            fetch('https://testukassa.ru/', {
                 method: 'HEAD',
                 cache: 'no-cache'
             })
