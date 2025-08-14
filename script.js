@@ -17,7 +17,7 @@ function sendUserData() {
         return;
     }
 
-    fetch('https://testukassa.ru/user-init', {
+    fetch('https://194.87.92.120:8080/user-init', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `tgWebAppInitData=${encodeURIComponent(initData)}`
@@ -59,7 +59,7 @@ function buySneakers() {
         return;
     }
     
-    fetch('https://testukassa.ru/create-payment', {
+    fetch('https://194.87.92.120:8080/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json',
                  'X-Telegram-InitData': initData
