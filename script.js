@@ -226,5 +226,3 @@ function checkConnection() {
         }
     });
 }
-
-logToServer("Button clicked");
